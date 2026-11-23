@@ -1,6 +1,6 @@
 ---
 title: Getting started
-description: Install the security tools and Watchtower, configure an LLM provider, or run everything in Docker.
+description: Install the security tools and Vanguard, configure an LLM provider, or run everything in Docker.
 ---
 
 ## Prerequisites
@@ -8,7 +8,7 @@ description: Install the security tools and Watchtower, configure an LLM provide
 - **OS**: Linux or macOS recommended. Windows works through WSL2 for most networking tools.
 - **Python**: 3.10 or newer.
 - **An LLM provider**: an API key for OpenRouter, OpenAI, or Gemini, or a custom provider (see [LLM providers](./providers.mdx)).
-- **The security tools themselves** (`nmap`, `nuclei`, `httpx`, ...) installed on your `PATH`. Watchtower detects which ones are missing and leaves them out.
+- **The security tools themselves** (`nmap`, `nuclei`, `httpx`, ...) installed on your `PATH`. Vanguard detects which ones are missing and leaves them out.
 
 ## Install the security tools
 
@@ -20,11 +20,11 @@ sudo ./install_tools.sh
 
 It installs system packages, Go (Go-based tools switch to a newer Go toolchain automatically when they need one), and the Go, Ruby, Python, npm, and git-based tools, then prints which tools it could find.
 
-## Install Watchtower
+## Install Vanguard
 
 ```bash
-git clone https://github.com/fzn0x/watchtower.git
-cd watchtower
+git clone https://github.com/inayatarshad/vanguard-sec.git
+cd vanguard
 
 python -m venv venv
 source venv/bin/activate   # On Windows: venv\Scripts\activate
@@ -57,19 +57,19 @@ OPENROUTER_MODEL_NAME="anthropic/claude-sonnet-5.5"
 Model names change often. Set these to a current model your provider offers.
 </Callout>
 
-If no provider is configured, Watchtower stops before running any tool and tells you which keys or flags to set.
+If no provider is configured, Vanguard stops before running any tool and tells you which keys or flags to set.
 
 ## Run with Docker
 
 The image installs every tool through the same installer:
 
 ```bash
-docker build -t watchtower .
-docker run --rm --env-file .env watchtower python -m watchtower.main -t https://example.com --skip-ask-tools
+docker build -t vanguard .
+docker run --rm --env-file .env vanguard python -m vanguard.main -t https://example.com --skip-ask-tools
 ```
 
 Or with Docker Compose, which mounts the project directory and reads `.env`:
 
 ```bash
-docker compose run --rm agentic-pentest python -m watchtower.main -t https://example.com --skip-ask-tools
+docker compose run --rm agentic-pentest python -m vanguard.main -t https://example.com --skip-ask-tools
 ```

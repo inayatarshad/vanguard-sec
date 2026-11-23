@@ -6,9 +6,9 @@ const withMDX = createMDX();
 const config = {
   // Static HTML for GitHub Pages: no Node.js server at runtime.
   output: 'export',
-  // The site is a project page served from https://fzn0x.github.io/watchtower/.
-  basePath: '/watchtower',
-  // Emit tools/index.html so /watchtower/tools/ keeps working.
+  // The site is a project page served from https://inayatarshad.github.io/vanguard-sec/.
+  basePath: '/vanguard-sec',
+  // Emit tools/index.html so /vanguard/tools/ keeps working.
   trailingSlash: true,
   // The image optimizer needs a server, so serve images as they are.
   images: { unoptimized: true },

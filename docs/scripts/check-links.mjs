@@ -5,7 +5,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const OUT = 'out';
-const BASE = '/watchtower';
+const BASE = '/vanguard-sec';
 
 function htmlFiles(dir) {
   return readdirSync(dir).flatMap((name) => {
@@ -15,7 +15,7 @@ function htmlFiles(dir) {
   });
 }
 
-// out/tools/index.html is served at /watchtower/tools/.
+// out/tools/index.html is served at /vanguard/tools/.
 function urlOf(file) {
   const rel = relative(OUT, file).split(sep).join('/');
   return `${BASE}/${rel.replace(/(^|\/)index\.html$/, '$1')}`;

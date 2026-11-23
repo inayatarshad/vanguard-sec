@@ -11,13 +11,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://fzn0x.github.io/watchtower/'),
+  metadataBase: new URL('https://inayatarshad.github.io/vanguard-sec/'),
   title: {
     template: `%s | ${appName}`,
     default: appName,
   },
   description: appDescription,
-  // A static import carries the base path, so the icon resolves under /watchtower.
+  // A static import carries the base path, so the icon resolves under /vanguard.
   icons: { icon: { url: favicon.src, type: 'image/svg+xml' } },
 };
 

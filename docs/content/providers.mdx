@@ -1,11 +1,11 @@
 ---
 title: LLM providers
-description: Use a hosted provider, sign in to Claude, run a local model, or point Watchtower at any endpoint.
+description: Use a hosted provider, sign in to Claude, run a local model, or point Vanguard at any endpoint.
 ---
 
 ## Built-in providers
 
-Set one key in `.env`, or sign in to Claude, and Watchtower picks the provider in this order:
+Set one key in `.env`, or sign in to Claude, and Vanguard picks the provider in this order:
 
 | Key | Provider | Model variable | Default model |
 | --- | --- | --- | --- |
@@ -18,7 +18,7 @@ Set one key in `.env`, or sign in to Claude, and Watchtower picks the provider i
 
 ## Claude
 
-Watchtower uses the Anthropic SDK's own sign-in, so any of these works, checked in this order:
+Vanguard uses the Anthropic SDK's own sign-in, so any of these works, checked in this order:
 
 | Method | Set | Use it for |
 | --- | --- | --- |
@@ -32,24 +32,24 @@ To sign in without managing a key, install the [Anthropic CLI](https://github.co
 
 ```bash
 ant auth login
-python -m watchtower.main -t https://www.example.com
+python -m vanguard.main -t https://www.example.com
 ```
 
-`ant auth status` shows which credential is active. A leftover `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` in your environment or `.env` takes precedence over the login, so remove it if Watchtower is not using the account you expect.
+`ant auth status` shows which credential is active. A leftover `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` in your environment or `.env` takes precedence over the login, so remove it if Vanguard is not using the account you expect.
 
 Claude is chosen automatically when none of the keys in the table above is set. To pick it explicitly, pass `--provider anthropic` (or `--provider claude`); `--model` is optional and `--apikey` is only needed to use a key from a variable with another name.
 
 <Callout title="Claude subscriptions">
-Watchtower calls the Claude API, billed to your Claude Console organization. A Claude Pro or Max subscription cannot be used: Anthropic does not allow third-party tools to offer claude.ai login.
+Vanguard calls the Claude API, billed to your Claude Console organization. A Claude Pro or Max subscription cannot be used: Anthropic does not allow third-party tools to offer claude.ai login.
 </Callout>
 
 
 ## Custom providers
 
-Watchtower supports almost any provider through LangChain and LiteLLM. Override the defaults with `--provider`, `--model`, and `--apikey`:
+Vanguard supports almost any provider through LangChain and LiteLLM. Override the defaults with `--provider`, `--model`, and `--apikey`:
 
 ```bash
-python -m watchtower.main -t https://www.example.com \
+python -m vanguard.main -t https://www.example.com \
   --provider=https://api.dgrid.ai/api/v1 \
   --model=anthropic/claude-opus-4.5 \
   --apikey "API_KEY"
@@ -69,9 +69,9 @@ python -m watchtower.main -t https://www.example.com \
 The same settings can be put in `.env`:
 
 ```ini
-WATCHTOWER_PROVIDER="https://api.custom.com/v1"
-WATCHTOWER_MODEL="custom-model-v1"
-WATCHTOWER_APIKEY_NAME="MY_CUSTOM_KEY"
+VANGUARD_PROVIDER="https://api.custom.com/v1"
+VANGUARD_MODEL="custom-model-v1"
+VANGUARD_APIKEY_NAME="MY_CUSTOM_KEY"
 MY_CUSTOM_KEY="sk-..."
 ```
 
@@ -88,22 +88,22 @@ INFO:     - Updated state 'findings': [{'title': 'Overly Permissive CORS Configu
 
 ## Local models
 
-Watchtower can run on a model served from your own machine, so target data never leaves it. Any server with an OpenAI-compatible API works.
+Vanguard can run on a model served from your own machine, so target data never leaves it. Any server with an OpenAI-compatible API works.
 
 ### Ollama
 
-Pull a model, then point Watchtower at Ollama with `--provider ollama`:
+Pull a model, then point Vanguard at Ollama with `--provider ollama`:
 
 ```bash
 ollama pull llama3.3
-python -m watchtower.main -t https://www.example.com --provider ollama --model llama3.3
+python -m vanguard.main -t https://www.example.com --provider ollama --model llama3.3
 ```
 
-Watchtower talks to `http://localhost:11434/v1`. Set `OLLAMA_BASE_URL` to reach Ollama elsewhere, for example from inside Docker:
+Vanguard talks to `http://localhost:11434/v1`. Set `OLLAMA_BASE_URL` to reach Ollama elsewhere, for example from inside Docker:
 
 ```ini
-WATCHTOWER_PROVIDER="ollama"
-WATCHTOWER_MODEL="llama3.3"
+VANGUARD_PROVIDER="ollama"
+VANGUARD_MODEL="llama3.3"
 OLLAMA_BASE_URL="http://host.docker.internal:11434/v1"
 ```
 
@@ -116,13 +116,13 @@ On Linux, `host.docker.internal` needs `--add-host=host.docker.internal:host-gat
 Pass the server's OpenAI-compatible base URL as the provider. Use the address your server prints when it starts, since default ports differ between servers and versions:
 
 ```bash
-python -m watchtower.main -t https://www.example.com   --provider http://localhost:1234/v1   --model qwen3-14b
+python -m vanguard.main -t https://www.example.com   --provider http://localhost:1234/v1   --model qwen3-14b
 ```
 
-`--model` is required for Ollama and URL providers. No API key is needed: without `--apikey`, Watchtower sends a placeholder key, and never your `OPENAI_API_KEY`. If your server does check a key, pass `--apikey` with the name of the variable that holds it.
+`--model` is required for Ollama and URL providers. No API key is needed: without `--apikey`, Vanguard sends a placeholder key, and never your `OPENAI_API_KEY`. If your server does check a key, pass `--apikey` with the name of the variable that holds it.
 
 <Callout title="Context length">
-Watchtower sends tool output to the model, and prompts can be long. Local servers often default to a short context window and drop the start of long prompts without an error. Give the model a larger context: in Ollama, create a model with a higher `num_ctx` in its Modelfile (the OpenAI-compatible API cannot set it per request); in other servers, use their context-size setting. Larger models also follow Watchtower's JSON format more reliably.
+Vanguard sends tool output to the model, and prompts can be long. Local servers often default to a short context window and drop the start of long prompts without an error. Give the model a larger context: in Ollama, create a model with a higher `num_ctx` in its Modelfile (the OpenAI-compatible API cannot set it per request); in other servers, use their context-size setting. Larger models also follow Vanguard's JSON format more reliably.
 </Callout>
 
 ## Flagship models and reasoning

@@ -1,13 +1,13 @@
 ---
 title: Tools
-description: The security tools Watchtower drives, and the exact command it runs for each one.
+description: The security tools Vanguard drives, and the exact command it runs for each one.
 ---
 
-Watchtower drives these tools through small Python wrappers. Each wrapper gets the target in the form the tool expects: a bare **host** for network, DNS, and TLS tools, or a full **URL** for web tools. The planner only chooses among the tools you allow and that are installed.
+Vanguard drives these tools through small Python wrappers. Each wrapper gets the target in the form the tool expects: a bare **host** for network, DNS, and TLS tools, or a full **URL** for web tools. The planner only chooses among the tools you allow and that are installed.
 
 ## Network
 
-| Tool | Target | What Watchtower runs |
+| Tool | Target | What Vanguard runs |
 | --- | --- | --- |
 | `nmap` | host | `nmap -sV -sC -A -Pn -T4 <host>` |
 | `masscan` | host | `masscan -p1-65535 --rate 1000 <host>` |
@@ -15,7 +15,7 @@ Watchtower drives these tools through small Python wrappers. Each wrapper gets t
 
 ## Web recon
 
-| Tool | Target | What Watchtower runs |
+| Tool | Target | What Vanguard runs |
 | --- | --- | --- |
 | `httpx` | URL | `httpx -u <url> -silent -nc -sc -title -td -server -cl -fr` (ProjectDiscovery's prober; see [Troubleshooting](./troubleshooting.mdx#httpx-reports-could-not-run-or-is-shown-as-missing)) |
 | `whatweb` | URL | `whatweb -a 3 <url>` |
@@ -23,7 +23,7 @@ Watchtower drives these tools through small Python wrappers. Each wrapper gets t
 
 ## Crawling and URL discovery
 
-| Tool | Target | What Watchtower runs |
+| Tool | Target | What Vanguard runs |
 | --- | --- | --- |
 | `katana` | URL | `katana -u <url> -silent -nc -d 2 -jc -timeout 10 -rl 50` (crawl depth 2, parses JavaScript for endpoints) |
 | `gau` | host | `gau <host> --providers wayback,commoncrawl,otx,urlscan --threads 5 --timeout 30 --blacklist <static assets>`; archived URLs for the host only (no subdomains, to stay in scope); skipped for IP targets |
@@ -32,7 +32,7 @@ The endpoints and parameters these find feed the Logic Analyst's IDOR review, as
 
 ## Subdomains and DNS
 
-| Tool | Target | What Watchtower runs |
+| Tool | Target | What Vanguard runs |
 | --- | --- | --- |
 | `subfinder` | host | `subfinder -d <host> -silent -all` |
 | `amass` | host | `amass enum -passive -d <host>` |
@@ -41,7 +41,7 @@ The endpoints and parameters these find feed the Logic Analyst's IDOR review, as
 
 ## Vulnerability scanning
 
-| Tool | Target | What Watchtower runs |
+| Tool | Target | What Vanguard runs |
 | --- | --- | --- |
 | `nuclei` | URL | `nuclei -u <url> -silent` |
 | `nikto` | URL | `nikto -h <url> -maxtime 5m` |
@@ -51,25 +51,25 @@ The endpoints and parameters these find feed the Logic Analyst's IDOR review, as
 
 ## TLS
 
-| Tool | Target | What Watchtower runs |
+| Tool | Target | What Vanguard runs |
 | --- | --- | --- |
 | `testssl` | host | `testssl.sh --quiet <host>` |
 | `sslyze` | host | `sslyze <host>` |
 
 ## Content and parameter discovery
 
-| Tool | Target | What Watchtower runs |
+| Tool | Target | What Vanguard runs |
 | --- | --- | --- |
 | `gobuster` | URL | `gobuster dir -u <url> -w <wordlist>` |
 | `ffuf` | URL | `ffuf -u <url>/FUZZ -w <wordlist> -t 40 -c` |
 | `arjun` | URL | `arjun -u <url> -t 10 -T 5` |
 | `kiterunner` | URL | `kr scan <url> -A=apiroutes-2202` |
 
-`gobuster` and `ffuf` use `WATCHTOWER_WORDLIST` if set, then common SecLists/dirb locations, then a small list bundled with Watchtower.
+`gobuster` and `ffuf` use `VANGUARD_WORDLIST` if set, then common SecLists/dirb locations, then a small list bundled with Vanguard.
 
 ## Security analysis
 
-| Tool | Target | What Watchtower runs |
+| Tool | Target | What Vanguard runs |
 | --- | --- | --- |
 | `xsstrike` | URL | `xsstrike -u <url>` |
 | `dalfox` | URL | `dalfox url <url> --silence --skip-bav` |

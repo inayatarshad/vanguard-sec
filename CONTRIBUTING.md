@@ -1,4 +1,4 @@
-# Contributing to Watchtower
+# Contributing to Vanguard
 
 We welcome contributions to this project!
 
@@ -10,16 +10,16 @@ We welcome contributions to this project!
 
 ## Adding a New Tool
 
-1. Create a module `watchtower/tools/<tool>.py` with a `run(target, **kwargs)` function. Use `extract_hostname` for host/DNS tools and `normalize_url` for web tools, and propagate `auth_metadata` to the `run_cli_tool` helper.
-2. Add the tool name to the `all_tools` list in `watchtower/main.py`. The `Worker` node imports tool modules by name, so it needs no changes.
-3. If the tool's binary name on `PATH` differs from the tool name, add it to `binary_aliases` in `watchtower/main.py` so detection works (see `kiterunner`/`kr`).
+1. Create a module `vanguard/tools/<tool>.py` with a `run(target, **kwargs)` function. Use `extract_hostname` for host/DNS tools and `normalize_url` for web tools, and propagate `auth_metadata` to the `run_cli_tool` helper.
+2. Add the tool name to the `all_tools` list in `vanguard/main.py`. The `Worker` node imports tool modules by name, so it needs no changes.
+3. If the tool's binary name on `PATH` differs from the tool name, add it to `binary_aliases` in `vanguard/main.py` so detection works (see `kiterunner`/`kr`).
 4. Add the install steps to `install_tools.sh` so the bundled installer and the Docker image pick it up.
 5. List the tool in the README Features section.
 
 ## Adding a New Specialized Agent
 
-1. Create a new module in `watchtower/agents/`.
+1. Create a new module in `vanguard/agents/`.
 2. Define the agent's prompts and expected output (using Pydantic/JSON).
-3. Connect the agent into the LangGraph state machine in `watchtower/core/agent_manager.py`.
+3. Connect the agent into the LangGraph state machine in `vanguard/core/agent_manager.py`.
 
-You are responsible for ensuring you only test targets you are explicitly authorized to test. Watchtower does not enforce target scope, so take care not to point it at systems you do not own or have permission to assess.
+You are responsible for ensuring you only test targets you are explicitly authorized to test. Vanguard does not enforce target scope, so take care not to point it at systems you do not own or have permission to assess.

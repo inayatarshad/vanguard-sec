@@ -1,12 +1,12 @@
 # Changelog
 
-All notable changes to Watchtower are documented here.
+All notable changes to Vanguard are documented here.
 
 ## 1.0.8
 
 ### Added
 - Local models: `--provider ollama --model <name>` runs on Ollama at `localhost:11434` (`OLLAMA_BASE_URL` to change it), and any other OpenAI-compatible server (LM Studio, llama.cpp, vLLM) works as `--provider <url> --model <name>`. No API key is needed, and `--effort` reaches Ollama as `reasoning_effort`. (#51)
-- Claude sign-in: Claude is a built-in provider, and Watchtower uses the Anthropic SDK's own credential lookup, so an API key (`ANTHROPIC_API_KEY`), a gateway token (`ANTHROPIC_AUTH_TOKEN`), an `ant auth login` profile, or workload identity federation all work. `ANTHROPIC_MODEL_NAME` sets the model (default `claude-sonnet-5-5`; `--flagship` uses `claude-opus-5-5`), and `--provider claude` is an alias for `anthropic`. (#52)
+- Claude sign-in: Claude is a built-in provider, and Vanguard uses the Anthropic SDK's own credential lookup, so an API key (`ANTHROPIC_API_KEY`), a gateway token (`ANTHROPIC_AUTH_TOKEN`), an `ant auth login` profile, or workload identity federation all work. `ANTHROPIC_MODEL_NAME` sets the model (default `claude-sonnet-5-5`; `--flagship` uses `claude-opus-5-5`), and `--provider claude` is an alias for `anthropic`. (#52)
 
 ### Fixed
 - Claude requests no longer send a temperature, which current Claude models reject; `--provider anthropic` failed on `claude-sonnet-5-5`. (#52)
@@ -15,7 +15,7 @@ All notable changes to Watchtower are documented here.
 - `--provider ollama` works; it used to fall through to LiteLLM without the `ollama/` prefix. (#51)
 
 ### Changed
-- New logo: a watchtower with a laser eye, in the README, the docs header, and the favicon. (#50)
+- New logo: a vanguard with a laser eye, in the README, the docs header, and the favicon. (#50)
 - The documentation site moved to Fumadocs with a quiet shadcn look, at the same URLs, with built-in search. Its build fails on a broken internal link or anchor. (#53)
 - `anthropic>=0.98.0` is now required, for `ant auth login` profiles and workload identity federation. (#52)
 
@@ -23,8 +23,8 @@ All notable changes to Watchtower are documented here.
 
 ### Added
 - Five recon tools: `katana` (crawler that also parses JavaScript), `gau` (archived URLs for the host), `naabu` (port discovery without root), `dnsx` (DNS records with answers), and `trufflehog` (verified secrets in repositories), for 28 tools in total. `katana` and `gau` also feed the IDOR review. (#9, #48)
-- A documentation site at https://fzn0x.github.io/watchtower/, deployed from `main`. (#8, #47)
-- Continuous integration: every push and pull request runs the tests on Python 3.10 to 3.13; changes to the Dockerfile, installer, or requirements build the Docker image on Linux and verify Watchtower, the httpx scanner, and every tool inside it. (#42, #45)
+- A documentation site at https://inayatarshad.github.io/vanguard-sec/, deployed from `main`. (#8, #47)
+- Continuous integration: every push and pull request runs the tests on Python 3.10 to 3.13; changes to the Dockerfile, installer, or requirements build the Docker image on Linux and verify Vanguard, the httpx scanner, and every tool inside it. (#42, #45)
 - Releases are published by CI from version tags, with notes taken from this changelog. (#42, #45)
 
 ### Fixed
@@ -47,12 +47,12 @@ All notable changes to Watchtower are documented here.
 - Headless mode (`--skip-ask-tools`) offers only installed tools. (#36, #40)
 
 ### Added
-- `WATCHTOWER_HTTPX_BIN` to point Watchtower at a specific httpx scanner binary.
+- `VANGUARD_HTTPX_BIN` to point Vanguard at a specific httpx scanner binary.
 
 ## 1.0.5
 
 ### Added
-- Flagship model support with reasoning-aware configuration. New `--flagship`, `--effort`, and `--max-tokens` flags (and `WATCHTOWER_FLAGSHIP` / `WATCHTOWER_EFFORT` / `WATCHTOWER_MAX_TOKENS`) select the provider's top model and set reasoning effort. (#26, #28)
+- Flagship model support with reasoning-aware configuration. New `--flagship`, `--effort`, and `--max-tokens` flags (and `VANGUARD_FLAGSHIP` / `VANGUARD_EFFORT` / `VANGUARD_MAX_TOKENS`) select the provider's top model and set reasoning effort. (#26, #28)
 
 ### Changed
 - The LLM setup no longer forces `temperature=0` on reasoning models; temperature is omitted when reasoning is enabled so flagship models work. Reasoning is wired per provider (`reasoning_effort` for the OpenAI, Anthropic, and Gemini classes; `extra_body.reasoning` for OpenRouter and custom OpenAI-compatible endpoints).
@@ -64,7 +64,7 @@ All notable changes to Watchtower are documented here.
 - Analyst node no longer crashes on its error path (it logged without importing `logging`). (#10)
 - Tool detection recognizes tools installed under a different binary name, so kiterunner (`kr`) is no longer reported missing. (#11)
 - kiterunner wrapper forwards auth cookies and headers like the other tools. (#12)
-- `ffuf` and `gobuster` resolve a real wordlist (`WATCHTOWER_WORDLIST`, common system locations, or a small bundled list) instead of a path that never existed. (#13)
+- `ffuf` and `gobuster` resolve a real wordlist (`VANGUARD_WORDLIST`, common system locations, or a small bundled list) instead of a path that never existed. (#13)
 - `gitleaks` scans a cloned target repository instead of the current working directory, and skips clearly for non-repository targets. (#14)
 - Reports and memory are scoped per run, so a report covers a single assessment instead of every finding ever stored. (#15)
 
@@ -77,13 +77,13 @@ All notable changes to Watchtower are documented here.
 - `--run` option to choose which run `--report` renders (defaults to the latest).
 
 ## 1.0.3
-See the release notes: https://github.com/fzn0x/watchtower/releases/tag/1.0.3
+Early release, published as Watchtower before the rename.
 
 ## 1.0.2
-See the release notes: https://github.com/fzn0x/watchtower/releases/tag/1.0.2
+Early release, published as Watchtower before the rename.
 
 ## 1.0.1
-See the release notes: https://github.com/fzn0x/watchtower/releases/tag/1.0.1
+Early release, published as Watchtower before the rename.
 
 ## 1.0.0
 Initial release.

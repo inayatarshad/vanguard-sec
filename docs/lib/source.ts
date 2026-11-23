@@ -7,7 +7,7 @@ const docs = defineDocs({
   dir: 'content',
   docs: {
     // `navTitle` (optional) sets a shorter sidebar label than the page title,
-    // like "Home" for the page titled "Watchtower".
+    // like "Home" for the page titled "Vanguard".
     schema: pageSchema.extend({ navTitle: pageSchema.shape.description }),
   },
   meta: {

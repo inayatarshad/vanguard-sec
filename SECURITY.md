@@ -11,9 +11,9 @@ Currently, only the `main` branch is actively supported with security updates. W
 
 ## Reporting a Vulnerability
 
-Watchtower is a security tool, and we take its own security seriously. 
+Vanguard is a security tool, and we take its own security seriously. 
 
-If you discover a vulnerability in Watchtower that could lead to unauthorized code execution, bypass the intended LLM-sandbox constraints, or expose user API keys, please do **not** report it by creating a public GitHub issue or a public pull request.
+If you discover a vulnerability in Vanguard that could lead to unauthorized code execution, bypass the intended LLM-sandbox constraints, or expose user API keys, please do **not** report it by creating a public GitHub issue or a public pull request.
 
 Instead, report it privately through GitHub's private vulnerability reporting: open the repository's **Security** tab and click **Report a vulnerability**. This keeps the details private until a fix is ready. If private reporting is unavailable, contact the maintainer privately before disclosing.
 
@@ -33,4 +33,4 @@ The following issues are considered out of scope for this repository's security 
 - AI Hallucinations: If an LLM agent (Analyst, Planner, or Logic Analyst) generates an inaccurate pentest report or a flawed testing plan, this is a known limitation of generative AI and not considered a security vulnerability of the framework code.
 - "Jailbreaks" of the underlying LLM providers (e.g. bypassing Anthropic's safety filters).
 
-Thank you for helping keep Watchtower safe!
+Thank you for helping keep Vanguard safe!

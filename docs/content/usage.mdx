@@ -3,24 +3,24 @@ title: Usage
 description: Run a scan, choose which tools the planner may use, test behind a login, and tune models and reasoning.
 ---
 
-Give Watchtower a target URL or IP with `-t` / `--target`:
+Give Vanguard a target URL or IP with `-t` / `--target`:
 
 ```bash
-python -m watchtower.main -t https://www.example.com
+python -m vanguard.main -t https://www.example.com
 ```
 
 Print the installed version with `--version`.
 
 ## Interactive tool selection
 
-On launch, Watchtower shows a checklist of the supported tools with the installed ones pre-selected. Use <kbd>Space</kbd> to toggle tools (narrowing what the planner may run) and <kbd>Enter</kbd> to confirm.
+On launch, Vanguard shows a checklist of the supported tools with the installed ones pre-selected. Use <kbd>Space</kbd> to toggle tools (narrowing what the planner may run) and <kbd>Enter</kbd> to confirm.
 
 ## Headless mode
 
-To skip the checklist (for example in CI), use `--skip-ask-tools`. Watchtower then offers the planner every supported tool installed on your `PATH`; missing tools are logged and left out.
+To skip the checklist (for example in CI), use `--skip-ask-tools`. Vanguard then offers the planner every supported tool installed on your `PATH`; missing tools are logged and left out.
 
 ```bash
-python -m watchtower.main -t https://www.example.com --skip-ask-tools
+python -m vanguard.main -t https://www.example.com --skip-ask-tools
 ```
 
 ## Authenticated testing
@@ -28,7 +28,7 @@ python -m watchtower.main -t https://www.example.com --skip-ask-tools
 Pass a session cookie or custom headers for authenticated workflows:
 
 ```bash
-python -m watchtower.main -t https://api.example.com \
+python -m vanguard.main -t https://api.example.com \
   --cookie "session=xyz123" \
   --header "X-API-Key: secret-key"
 ```
@@ -37,21 +37,21 @@ python -m watchtower.main -t https://api.example.com \
 
 ## Flagship models and reasoning
 
-Watchtower defaults to balanced, cost-effective models. For harder targets, opt into the provider's flagship model and turn on reasoning:
+Vanguard defaults to balanced, cost-effective models. For harder targets, opt into the provider's flagship model and turn on reasoning:
 
 ```bash
 # Flagship model for your provider, reasoning at high effort
-python -m watchtower.main -t https://www.example.com --flagship
+python -m vanguard.main -t https://www.example.com --flagship
 
 # Or tune reasoning effort and the output budget directly
-python -m watchtower.main -t https://www.example.com --effort high --max-tokens 8000
+python -m vanguard.main -t https://www.example.com --effort high --max-tokens 8000
 ```
 
 - `--flagship` selects the provider's top model (for example `gpt-6-astra`, `gemini-4-carbon`, `claude-opus-5-5`, or `anthropic/claude-opus-5.5` on OpenRouter) and runs it at high effort.
-- `--effort` accepts `low`, `medium`, `high`, `xhigh`, `max`. Watchtower lowers the value to the highest level each provider supports and logs a notice when it does: Anthropic accepts the full range, while OpenAI, OpenRouter, Gemini, and LiteLLM top out at `high`.
+- `--effort` accepts `low`, `medium`, `high`, `xhigh`, `max`. Vanguard lowers the value to the highest level each provider supports and logs a notice when it does: Anthropic accepts the full range, while OpenAI, OpenRouter, Gemini, and LiteLLM top out at `high`.
 - `--max-tokens` caps the output tokens. When reasoning is on and this is not set, it defaults to 16000.
 
-When reasoning is on, Watchtower omits the `temperature` setting, since flagship and reasoning models reject a forced temperature. The same settings can be put in `.env` as `WATCHTOWER_FLAGSHIP`, `WATCHTOWER_EFFORT`, and `WATCHTOWER_MAX_TOKENS`.
+When reasoning is on, Vanguard omits the `temperature` setting, since flagship and reasoning models reject a forced temperature. The same settings can be put in `.env` as `VANGUARD_FLAGSHIP`, `VANGUARD_EFFORT`, and `VANGUARD_MAX_TOKENS`.
 
 <Callout title="Note">
 Flagship ids and reasoning parameters change often across providers. If a model or effort value is rejected, set a current one for your provider.
