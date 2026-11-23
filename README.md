@@ -1,19 +1,19 @@
 <div align="center">
 
-<img src="docs/assets/watchtower.svg" alt="Watchtower: AI-powered penetration testing" width="640">
+<img src="docs/assets/vanguard.svg" alt="Vanguard: AI-powered penetration testing" width="640">
 
-# Watchtower
+# Vanguard
 
 **AI-powered penetration testing automation, orchestrated by LLM agents.**
 
-[![CI](https://github.com/fzn0x/watchtower/actions/workflows/ci.yml/badge.svg)](https://github.com/fzn0x/watchtower/actions/workflows/ci.yml)
-[![Docs](https://img.shields.io/badge/docs-fzn0x.github.io%2Fwatchtower-blue.svg?style=flat-square)](https://fzn0x.github.io/watchtower/)
+[![CI](https://github.com/inayatarshad/vanguard-sec/actions/workflows/ci.yml/badge.svg)](https://github.com/inayatarshad/vanguard-sec/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-inayatarshad.github.io%2Fvanguard-sec-blue.svg?style=flat-square)](https://inayatarshad.github.io/vanguard-sec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-brightgreen.svg?style=flat-square&logo=python)](https://www.python.org/downloads/)
 [![Architecture](https://img.shields.io/badge/Architecture-LangGraph-orange.svg?style=flat-square)](https://langchain-ai.github.io/langgraph/)
 [![LLMs](https://img.shields.io/badge/LLMs-Claude%20%7C%20Gemini%20%7C%20GPT%20%7C%20Local-purple.svg?style=flat-square)]()
 
-[Documentation](https://fzn0x.github.io/watchtower/) ·
+[Documentation](https://inayatarshad.github.io/vanguard-sec/) ·
 [Quick Start](#quick-start) ·
 [How it works](#how-it-works) ·
 [Models](#llm-providers) ·
@@ -25,10 +25,10 @@
 
 ---
 
-**Watchtower** is an AI-powered penetration testing automation CLI. It uses LLMs and [LangGraph](https://langchain-ai.github.io/langgraph/) to run an agentic loop against a website or host you are authorized to test: an LLM decides which security tool to run next, Watchtower runs it, another LLM pass reads the raw output and extracts real findings, and everything is stored per run in SQLite so you can export a PDF report at the end.
+**Vanguard** is an AI-powered penetration testing automation CLI. It uses LLMs and [LangGraph](https://langchain-ai.github.io/langgraph/) to run an agentic loop against a website or host you are authorized to test: an LLM decides which security tool to run next, Vanguard runs it, another LLM pass reads the raw output and extracts real findings, and everything is stored per run in SQLite so you can export a PDF report at the end.
 
 > [!WARNING]
-> Penetration testing is a red-team activity and must only be performed with explicit permission. Watchtower does **not** enforce target scope. Read the [Legal Disclaimer](#legal-disclaimer) before you begin.
+> Penetration testing is a red-team activity and must only be performed with explicit permission. Vanguard does **not** enforce target scope. Read the [Legal Disclaimer](#legal-disclaimer) before you begin.
 
 ## Table of contents
 
@@ -67,7 +67,7 @@
 
 ## How it works
 
-Watchtower compiles a LangGraph state machine with four nodes and runs it until the planner decides the test is finished (or the graph hits its recursion limit of 100 steps).
+Vanguard compiles a LangGraph state machine with four nodes and runs it until the planner decides the test is finished (or the graph hits its recursion limit of 100 steps).
 
 ```mermaid
 flowchart LR
@@ -81,12 +81,12 @@ flowchart LR
 
 | Node | File | What it does |
 | --- | --- | --- |
-| **Planner** | [`watchtower/agents/planner.py`](watchtower/agents/planner.py) | Sees the target (and whether it is an IP or a hostname), the allowed tools, all findings so far, and the last 3 observations. Returns an updated plan, the next tool or list of tools, and whether the test is finished. Any model error ends the run cleanly. |
-| **Worker** | [`watchtower/agents/worker.py`](watchtower/agents/worker.py) | Imports `watchtower.tools.<name>` and calls its `run(target, auth_metadata=...)`. Tools that are not in the allowed list are silently dropped. Several tools run in a thread pool (max 5). |
-| **Analyst** | [`watchtower/agents/analyst.py`](watchtower/agents/analyst.py) | Reviews the output of every tool from the latest step and returns findings with `title`, `severity` (Critical, High, Medium, Low, Info), `description`, and `evidence`. False positives and plain tool errors should produce an empty list. |
-| **Logic Analyst** | [`watchtower/agents/logic_analysis.py`](watchtower/agents/logic_analysis.py) | Runs only when the latest step included a recon tool (`httpx`, `kiterunner`, `arjun`, `gobuster`, `ffuf`, `katana`, `gau`). Produces an "IDOR Logic Analysis Plan" finding with a 1 to 10 confidence score, business impact, high-risk endpoints, and a step-by-step token and user-ID swapping test plan. |
+| **Planner** | [`vanguard/agents/planner.py`](vanguard/agents/planner.py) | Sees the target (and whether it is an IP or a hostname), the allowed tools, all findings so far, and the last 3 observations. Returns an updated plan, the next tool or list of tools, and whether the test is finished. Any model error ends the run cleanly. |
+| **Worker** | [`vanguard/agents/worker.py`](vanguard/agents/worker.py) | Imports `vanguard.tools.<name>` and calls its `run(target, auth_metadata=...)`. Tools that are not in the allowed list are silently dropped. Several tools run in a thread pool (max 5). |
+| **Analyst** | [`vanguard/agents/analyst.py`](vanguard/agents/analyst.py) | Reviews the output of every tool from the latest step and returns findings with `title`, `severity` (Critical, High, Medium, Low, Info), `description`, and `evidence`. False positives and plain tool errors should produce an empty list. |
+| **Logic Analyst** | [`vanguard/agents/logic_analysis.py`](vanguard/agents/logic_analysis.py) | Runs only when the latest step included a recon tool (`httpx`, `kiterunner`, `arjun`, `gobuster`, `ffuf`, `katana`, `gau`). Produces an "IDOR Logic Analysis Plan" finding with a 1 to 10 confidence score, business impact, high-risk endpoints, and a step-by-step token and user-ID swapping test plan. |
 
-The shared state ([`watchtower/core/state.py`](watchtower/core/state.py)) carries the scope target, allowed tools, accumulated `observations` and `findings`, the latest step's observations, the current plan, the next step, auth metadata, and the `is_finished` flag. As the graph streams, [`watchtower/main.py`](watchtower/main.py) writes every observation and finding to SQLite under the current run id.
+The shared state ([`vanguard/core/state.py`](vanguard/core/state.py)) carries the scope target, allowed tools, accumulated `observations` and `findings`, the latest step's observations, the current plan, the next step, auth metadata, and the `is_finished` flag. As the graph streams, [`vanguard/main.py`](vanguard/main.py) writes every observation and finding to SQLite under the current run id.
 
 ## Requirements
 
@@ -102,8 +102,8 @@ The shared state ([`watchtower/core/state.py`](watchtower/core/state.py)) carrie
 ## Quick Start
 
 ```bash
-git clone https://github.com/fzn0x/watchtower.git
-cd watchtower
+git clone https://github.com/inayatarshad/vanguard-sec.git
+cd vanguard-sec
 
 sudo ./install_tools.sh          # installs the security tools
 python -m venv venv
@@ -111,13 +111,13 @@ source venv/bin/activate         # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 cp .env.example .env             # then set a provider key, or see LLM providers below
-python -m watchtower.main -t https://www.example.com
+python -m vanguard.main -t https://www.example.com
 ```
 
 When the run ends, export it as a PDF:
 
 ```bash
-python -m watchtower.main --report pentest_report.pdf
+python -m vanguard.main --report pentest_report.pdf
 ```
 
 ## Installation in detail
@@ -126,7 +126,7 @@ python -m watchtower.main --report pentest_report.pdf
 2. **Install the tools** with `sudo ./install_tools.sh`. It installs system packages, Go, Go-based tools (ProjectDiscovery's `httpx`, `nuclei`, `subfinder`, `katana`, `naabu`, `dnsx`, plus `ffuf`, `gobuster`, `dalfox`, `amass`, `gitleaks`, `gau`, and others), Python and Ruby tools, `testssl.sh`, and `kiterunner` (verified against its release checksums). ProjectDiscovery `httpx` is also linked as `pd-httpx` so it is not confused with Python's `httpx` command.
 3. **Create a virtual environment** and `pip install -r requirements.txt`. Key dependencies: `langgraph`, `langchain` (core, community, openai, anthropic, google-genai), `anthropic>=0.98.0`, `litellm`, `pydantic`, `fpdf2`, `questionary`, `python-dotenv`.
 4. **Configure an LLM** by copying `.env.example` to `.env` and filling in one provider (see [LLM providers](#llm-providers)).
-5. **Check the install** with `python -m watchtower.main --version`. At the start of a real run Watchtower logs any tools it could not find on `PATH`.
+5. **Check the install** with `python -m vanguard.main --version`. At the start of a real run Vanguard logs any tools it could not find on `PATH`.
 
 A `Makefile` wraps the common commands:
 
@@ -145,14 +145,14 @@ The image (`python:3.11-slim`) installs every supported tool through the same `i
 cp .env.example .env    # add your provider settings
 docker compose build
 docker compose run --rm agentic-pentest \
-  python -m watchtower.main -t https://www.example.com --skip-ask-tools
+  python -m vanguard.main -t https://www.example.com --skip-ask-tools
 ```
 
 `docker-compose.yml` mounts the project at `/app`, so `pentest_memory.db` and generated PDFs land in your working copy. To use Ollama running on the host from inside the container, set `OLLAMA_BASE_URL` (for example `http://host.docker.internal:11434/v1`).
 
 ## LLM providers
 
-Watchtower runs on hosted models or on a model on your own machine. With no `--provider`, it picks the first provider it finds credentials for, in this order:
+Vanguard runs on hosted models or on a model on your own machine. With no `--provider`, it picks the first provider it finds credentials for, in this order:
 
 1. `OPENROUTER_API_KEY` (model from `OPENROUTER_MODEL_NAME`, default `anthropic/claude-sonnet-5.5`)
 2. `OPENAI_API_KEY` (model from `OPENAI_MODEL_NAME`, default `gpt-5.6`)
@@ -167,10 +167,10 @@ Set `ANTHROPIC_API_KEY` in `.env`, or sign in once with the [Anthropic CLI](http
 
 ```bash
 ant auth login
-python -m watchtower.main -t https://www.example.com
+python -m vanguard.main -t https://www.example.com
 ```
 
-Watchtower lets the Anthropic SDK find the credential itself, in its documented order: `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN` (for a gateway or proxy, together with `ANTHROPIC_BASE_URL`), the profile named by `ANTHROPIC_PROFILE`, workload identity federation (for CI), then the active `ant auth login` profile. `--provider claude` is an alias for `--provider anthropic`. The default model is `claude-sonnet-5-5`, and `--flagship` switches to `claude-opus-5-5`. Claude Pro and Max subscriptions cannot be used: Anthropic does not allow third-party tools to offer claude.ai login.
+Vanguard lets the Anthropic SDK find the credential itself, in its documented order: `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN` (for a gateway or proxy, together with `ANTHROPIC_BASE_URL`), the profile named by `ANTHROPIC_PROFILE`, workload identity federation (for CI), then the active `ant auth login` profile. `--provider claude` is an alias for `--provider anthropic`. The default model is `claude-sonnet-5-5`, and `--flagship` switches to `claude-opus-5-5`. Claude Pro and Max subscriptions cannot be used: Anthropic does not allow third-party tools to offer claude.ai login.
 
 ### Ollama and other local models
 
@@ -178,16 +178,16 @@ Run the model locally, so prompts and findings never leave your machine:
 
 ```bash
 ollama pull llama3.3
-python -m watchtower.main -t https://www.example.com --provider ollama --model llama3.3
+python -m vanguard.main -t https://www.example.com --provider ollama --model llama3.3
 ```
 
 No API key is needed. Set `OLLAMA_BASE_URL` if Ollama is not at `http://localhost:11434/v1`. LM Studio, llama.cpp, vLLM, and other OpenAI-compatible servers work by URL:
 
 ```bash
-python -m watchtower.main -t https://www.example.com --provider http://localhost:1234/v1 --model qwen3-14b
+python -m vanguard.main -t https://www.example.com --provider http://localhost:1234/v1 --model qwen3-14b
 ```
 
-Local and URL providers **require** `--model`. Without `--apikey`, Watchtower sends a placeholder key so your `OPENAI_API_KEY` is never leaked to a third-party endpoint. Give the model a large enough context window: the planner prompt includes all findings and recent tool output.
+Local and URL providers **require** `--model`. Without `--apikey`, Vanguard sends a placeholder key so your `OPENAI_API_KEY` is never leaked to a third-party endpoint. Give the model a large enough context window: the planner prompt includes all findings and recent tool output.
 
 ### OpenAI, Gemini, OpenRouter, LiteLLM, and custom endpoints
 
@@ -205,7 +205,7 @@ Local and URL providers **require** `--model`. Without `--apikey`, Watchtower se
 
 ```bash
 export GROQ_API_KEY=...
-python -m watchtower.main -t https://www.example.com --provider groq --model llama-3.3-70b --apikey GROQ_API_KEY
+python -m vanguard.main -t https://www.example.com --provider groq --model llama-3.3-70b --apikey GROQ_API_KEY
 ```
 
 ### Flagship models and reasoning
@@ -223,7 +223,7 @@ When reasoning is on, temperature is not sent (reasoning models reject it). With
 ### Interactive run
 
 ```bash
-python -m watchtower.main -t https://www.example.com
+python -m vanguard.main -t https://www.example.com
 ```
 
 You get a checklist of all 28 tools with the installed ones pre-ticked. The tools you leave ticked are the only ones the planner may use. Then the agent loop starts and logs every node it executes and every state update.
@@ -231,15 +231,15 @@ You get a checklist of all 28 tools with the installed ones pre-ticked. The tool
 ### Headless run (CI, scripts, Docker)
 
 ```bash
-python -m watchtower.main -t https://www.example.com --skip-ask-tools
+python -m vanguard.main -t https://www.example.com --skip-ask-tools
 ```
 
-Skips the checklist and allows every tool that is installed. If the interactive prompt cannot start (no TTY), Watchtower also falls back to the installed tools.
+Skips the checklist and allows every tool that is installed. If the interactive prompt cannot start (no TTY), Vanguard also falls back to the installed tools.
 
 ### Authenticated testing
 
 ```bash
-python -m watchtower.main -t https://app.example.com \
+python -m vanguard.main -t https://app.example.com \
   --cookie "session=abc123" \
   --header "Authorization: Bearer eyJ..." \
   --header "X-Tenant: acme"
@@ -254,7 +254,7 @@ python -m watchtower.main -t https://app.example.com \
 ## CLI reference
 
 ```
-python -m watchtower.main [options]
+python -m vanguard.main [options]
 ```
 
 | Option | Description |
@@ -285,17 +285,17 @@ Put these in `.env` (loaded automatically) or export them. See [`.env.example`](
 | `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL_NAME` | Claude key and model. |
 | `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_BASE_URL` | Claude through a gateway or proxy. |
 | `ANTHROPIC_PROFILE`, `ANTHROPIC_FEDERATION_RULE_ID` | A named `ant` profile, or workload identity federation. |
-| `WATCHTOWER_PROVIDER`, `WATCHTOWER_MODEL`, `WATCHTOWER_APIKEY_NAME` | Same as `--provider`, `--model`, `--apikey`. |
-| `WATCHTOWER_FLAGSHIP`, `WATCHTOWER_EFFORT`, `WATCHTOWER_MAX_TOKENS` | Same as `--flagship`, `--effort`, `--max-tokens`. |
+| `VANGUARD_PROVIDER`, `VANGUARD_MODEL`, `VANGUARD_APIKEY_NAME` | Same as `--provider`, `--model`, `--apikey`. |
+| `VANGUARD_FLAGSHIP`, `VANGUARD_EFFORT`, `VANGUARD_MAX_TOKENS` | Same as `--flagship`, `--effort`, `--max-tokens`. |
 | `OLLAMA_BASE_URL` | Ollama endpoint (default `http://localhost:11434/v1`). |
-| `WATCHTOWER_WORDLIST` | Wordlist for `ffuf` and `gobuster`. Default: the first SecLists or dirb `common.txt` found on the system, then a small bundled list. |
-| `WATCHTOWER_HTTPX_BIN` | Path to ProjectDiscovery's `httpx`, if Python's `httpx` command shadows it on `PATH`. |
+| `VANGUARD_WORDLIST` | Wordlist for `ffuf` and `gobuster`. Default: the first SecLists or dirb `common.txt` found on the system, then a small bundled list. |
+| `VANGUARD_HTTPX_BIN` | Path to ProjectDiscovery's `httpx`, if Python's `httpx` command shadows it on `PATH`. |
 
 ## Integrated tools
 
-Every tool has a small wrapper in [`watchtower/tools/`](watchtower/tools/) that builds the command below and runs it with a 5-minute timeout. `<host>` is the bare hostname or IP, `<url>` a full URL.
+Every tool has a small wrapper in [`vanguard/tools/`](vanguard/tools/) that builds the command below and runs it with a 5-minute timeout. `<host>` is the bare hostname or IP, `<url>` a full URL.
 
-| Category | Tool | Command Watchtower runs |
+| Category | Tool | Command Vanguard runs |
 | --- | --- | --- |
 | Ports and services | `nmap` | `nmap -sV -sC -A -Pn -T4 <host>` |
 | | `masscan` | `masscan -p1-65535 --rate 1000 <host>` |
@@ -345,8 +345,8 @@ Every run gets an id such as `20261123-141502-a1b2c3` and is stored in `pentest_
 Generate a report:
 
 ```bash
-python -m watchtower.main --report report.pdf                         # most recent run
-python -m watchtower.main --report report.pdf --run 20261123-141502-a1b2c3
+python -m vanguard.main --report report.pdf                         # most recent run
+python -m vanguard.main --report report.pdf --run 20261123-141502-a1b2c3
 ```
 
 The PDF has an executive summary (run id, target, start time, number of findings) followed by one section per finding with a color-coded severity, target, description, and evidence. Databases created by older versions are migrated automatically.
@@ -360,7 +360,7 @@ sqlite3 pentest_memory.db "SELECT run_id, target, created_at FROM runs ORDER BY 
 ## Project structure
 
 ```
-watchtower/
+vanguard/
 ├── main.py                  CLI entry point: flags, tool selection, graph loop, persistence
 ├── agents/
 │   ├── planner.py           Planner node and get_llm() provider selection
@@ -401,17 +401,17 @@ CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs the tests on Py
 
 ### Adding a tool
 
-1. Create `watchtower/tools/<tool>.py` with a `run(target, **kwargs)` function. Use `extract_hostname` for host and DNS tools and `normalize_url` for web tools, and pass `auth_metadata` to `run_cli_tool`.
-2. Add the name to `ALL_TOOLS` in [`watchtower/tools/__init__.py`](watchtower/tools/__init__.py). The Worker imports tool modules by name, so it needs no change.
-3. If the binary on `PATH` has a different name, add it to `BINARY_ALIASES` in [`watchtower/core/binaries.py`](watchtower/core/binaries.py) (see `kiterunner` / `kr`).
+1. Create `vanguard/tools/<tool>.py` with a `run(target, **kwargs)` function. Use `extract_hostname` for host and DNS tools and `normalize_url` for web tools, and pass `auth_metadata` to `run_cli_tool`.
+2. Add the name to `ALL_TOOLS` in [`vanguard/tools/__init__.py`](vanguard/tools/__init__.py). The Worker imports tool modules by name, so it needs no change.
+3. If the binary on `PATH` has a different name, add it to `BINARY_ALIASES` in [`vanguard/core/binaries.py`](vanguard/core/binaries.py) (see `kiterunner` / `kr`).
 4. Add install steps to `install_tools.sh` so local installs and the Docker image both get it.
 5. Add tests and list the tool in this README and the docs.
 
 ### Adding an agent
 
-1. Create a module in `watchtower/agents/` with a node function that takes `AgentState` and returns a partial state update.
+1. Create a module in `vanguard/agents/` with a node function that takes `AgentState` and returns a partial state update.
 2. Define its output as a Pydantic model and parse it with `PydanticOutputParser`, as the existing agents do.
-3. Wire it into the graph in [`watchtower/core/agent_manager.py`](watchtower/core/agent_manager.py).
+3. Wire it into the graph in [`vanguard/core/agent_manager.py`](vanguard/core/agent_manager.py).
 
 `findings`, `observations`, and `messages` use additive reducers: return only **new** items from a node, never the existing list, or every item gets duplicated.
 
@@ -427,7 +427,7 @@ The docs build fails on a broken internal link or anchor.
 
 ## Known limitations
 
-- **No scope enforcement.** Target validation only checks the format. Nothing stops you from pointing Watchtower at a system you are not authorized to test.
+- **No scope enforcement.** Target validation only checks the format. Nothing stops you from pointing Vanguard at a system you are not authorized to test.
 - **Single target per run.** The state holds a list, but the worker always uses the first target.
 - **Auth headers reach only some tools.** `--cookie` and `--header` are currently injected into ProjectDiscovery `httpx` (as `-H`) and `sqlmap` (as `--cookie` / `--headers`). Other tools run unauthenticated.
 - **LLM output is not ground truth.** Findings can be wrong or hallucinated. Verify every finding by hand before reporting it.
@@ -439,15 +439,15 @@ The docs build fails on a broken internal link or anchor.
 | Symptom | Fix |
 | --- | --- |
 | `No LLM provider is configured` | Set a provider key in `.env`, run `ant auth login`, or pass `--provider ollama --model <name>`. |
-| `--provider ollama needs a model name` | Add `--model`, or set `WATCHTOWER_MODEL`. |
-| `httpx skipped: ProjectDiscovery httpx was not found` | Python's `httpx` command is shadowing the scanner. Run `install_tools.sh` (it adds `pd-httpx`) or set `WATCHTOWER_HTTPX_BIN`. |
+| `--provider ollama needs a model name` | Add `--model`, or set `VANGUARD_MODEL`. |
+| `httpx skipped: ProjectDiscovery httpx was not found` | Python's `httpx` command is shadowing the scanner. Run `install_tools.sh` (it adds `pd-httpx`) or set `VANGUARD_HTTPX_BIN`. |
 | `Missing tools: ...` at start-up | Those binaries are not on `PATH`. Run `sudo ./install_tools.sh`, or use the Docker image. Go tools live in `~/go/bin`. |
 | The run ends right away with `current_plan: Error: ...` | The model call failed (bad key, wrong model name, context too small). The error text says which. |
 | Local model returns invalid JSON | Use a larger or instruction-tuned model and give it a bigger context window. |
 | `gitleaks` / `trufflehog` skipped | They only scan git repositories. Use a repository URL as the target. |
 | `No pentest findings were found` when reporting | The run produced no findings, or `--run` points to a different run. List runs with the `sqlite3` command above. |
 
-More in the [troubleshooting guide](https://fzn0x.github.io/watchtower/troubleshooting/).
+More in the [troubleshooting guide](https://inayatarshad.github.io/vanguard-sec/troubleshooting/).
 
 ## Roadmap
 
@@ -464,33 +464,33 @@ More in the [troubleshooting guide](https://fzn0x.github.io/watchtower/troublesh
 
 ## Contributing
 
-Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md), the [Development](#development) section above, and the [development guide](https://fzn0x.github.io/watchtower/development/).
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md), the [Development](#development) section above, and the [development guide](https://inayatarshad.github.io/vanguard-sec/development/).
 
-Watchtower does not enforce target scope. You are responsible for testing only systems you own or are explicitly authorized to assess.
+Vanguard does not enforce target scope. You are responsible for testing only systems you own or are explicitly authorized to assess.
 
 ## Security
 
-Found a security issue in Watchtower itself? Please follow the [Security Policy](SECURITY.md) and report it privately through GitHub's **Report a vulnerability** button, not in a public issue.
+Found a security issue in Vanguard itself? Please follow the [Security Policy](SECURITY.md) and report it privately through GitHub's **Report a vulnerability** button, not in a public issue.
 
 ## License
 
 Licensed under the **MIT License**. See [`LICENSE`](LICENSE) for details.
 
-By using this software, you agree to the conditions outlined in the [Legal Disclaimer](#legal-disclaimer). Watchtower's developers assume no liability for misuse of this tool.
+By using this software, you agree to the conditions outlined in the [Legal Disclaimer](#legal-disclaimer). Vanguard's developers assume no liability for misuse of this tool.
 
 ## Legal Disclaimer
 
-**Watchtower is designed exclusively for authorized security testing and educational purposes.**
+**Vanguard is designed exclusively for authorized security testing and educational purposes.**
 
 - **Legal use:** authorized penetration testing, security research, educational environments.
 - **Illegal use:** unauthorized access, malicious activity, any form of cyber attack.
 
 You are fully responsible for ensuring you have explicit written permission before testing any system. Unauthorized access to computer systems is illegal under laws including the Computer Fraud and Abuse Act (CFAA), the UK Computer Misuse Act, and equivalent legislation in other countries.
 
-By using Watchtower, you agree to use it only on systems you own or are explicitly authorized to test.
+By using Vanguard, you agree to use it only on systems you own or are explicitly authorized to test.
 
 ## Acknowledgements
 
-Created and maintained by **[fzn0x](https://github.com/fzn0x)**.
+Maintained by **[inayatarshad](https://github.com/inayatarshad)**. Vanguard is built on Watchtower, originally created by **[fzn0x](https://github.com/fzn0x)** and released under the MIT License.
 
-A deep and sincere thank you to the open-source security community. Watchtower stands on the shoulders of giants. This framework would not exist without the developers who built and maintain the underlying penetration testing and reconnaissance tools that power its worker engine. Thank you for making security accessible.
+A deep and sincere thank you to the open-source security community. Vanguard stands on the shoulders of giants. This framework would not exist without the developers who built and maintain the underlying penetration testing and reconnaissance tools that power its worker engine. Thank you for making security accessible.

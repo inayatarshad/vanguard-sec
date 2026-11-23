@@ -2,6 +2,14 @@
 
 All notable changes to Vanguard are documented here.
 
+## Unreleased
+
+### Changed
+- The project is renamed from Watchtower to Vanguard and lives at https://github.com/inayatarshad/vanguard-sec. The package is now `vanguard`, so runs start with `python -m vanguard.main`.
+- Environment variables use the `VANGUARD_` prefix: `VANGUARD_PROVIDER`, `VANGUARD_MODEL`, `VANGUARD_APIKEY_NAME`, `VANGUARD_FLAGSHIP`, `VANGUARD_EFFORT`, `VANGUARD_MAX_TOKENS`, `VANGUARD_WORDLIST`, and `VANGUARD_HTTPX_BIN`. Rename them in your `.env`.
+- New shield logo and banner.
+- The README is a full guide: how the agents work, every CLI flag and environment variable, the command behind each tool, reports, known limitations, and troubleshooting.
+
 ## 1.0.8
 
 ### Added
