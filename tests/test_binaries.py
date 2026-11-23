@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from watchtower.core import binaries
+from vanguard.core import binaries
 
 # What pip writes for Python httpx's console script on POSIX.
 PY_CLI = (b"#!/usr/bin/python3\n# -*- coding: utf-8 -*-\nimport re\nimport sys\n"
@@ -23,7 +23,7 @@ def _make_exe(directory, name, content):
 
 
 def _isolated_env(path_dirs, home, **extra):
-    env = {k: v for k, v in os.environ.items() if k not in ("WATCHTOWER_HTTPX_BIN", "GOPATH")}
+    env = {k: v for k, v in os.environ.items() if k not in ("VANGUARD_HTTPX_BIN", "GOPATH")}
     env["PATH"] = os.pathsep.join(path_dirs)
     env.update(extra)
     return [
@@ -101,7 +101,7 @@ class FindPdHttpxTests(_Tmp):
 
     def test_env_override_wins(self):
         custom = _make_exe(self.real_dir, "my-httpx", REAL_BIN)
-        found = self.run_with([], binaries.find_pd_httpx, WATCHTOWER_HTTPX_BIN=custom)
+        found = self.run_with([], binaries.find_pd_httpx, VANGUARD_HTTPX_BIN=custom)
         self.assertEqual(found, custom)
 
 

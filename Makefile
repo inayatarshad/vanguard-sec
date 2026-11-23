@@ -11,7 +11,7 @@ run:
 		echo "Usage: make run TARGET=https://example.com"; \
 		exit 1; \
 	fi
-	python -m watchtower.main -t $(TARGET)
+	python -m vanguard.main -t $(TARGET)
 
 docker-build:
 	docker-compose build

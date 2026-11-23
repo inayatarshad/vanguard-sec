@@ -2,8 +2,8 @@ import os
 import unittest
 from unittest import mock
 
-from watchtower.core.claude import CLAUDE_DEFAULT_MODEL
-from watchtower.core.llm_config import (
+from vanguard.core.claude import CLAUDE_DEFAULT_MODEL
+from vanguard.core.llm_config import (
     CLAUDE_CREDENTIAL_VARS,
     FLAGSHIP_MODELS,
     PROVIDER_KEY_VARS,
@@ -20,8 +20,8 @@ except Exception:
     _HAS_LANGCHAIN = False
 
 _LLM_VARS = set(PROVIDER_KEY_VARS) | set(CLAUDE_CREDENTIAL_VARS) | {
-    "WATCHTOWER_PROVIDER", "WATCHTOWER_MODEL", "WATCHTOWER_APIKEY_NAME",
-    "WATCHTOWER_FLAGSHIP", "WATCHTOWER_EFFORT", "WATCHTOWER_MAX_TOKENS",
+    "VANGUARD_PROVIDER", "VANGUARD_MODEL", "VANGUARD_APIKEY_NAME",
+    "VANGUARD_FLAGSHIP", "VANGUARD_EFFORT", "VANGUARD_MAX_TOKENS",
     "ANTHROPIC_MODEL_NAME", "ANTHROPIC_BASE_URL", "ANTHROPIC_API_URL",
     "ANTHROPIC_CONFIG_DIR",
 }
@@ -44,13 +44,13 @@ class ClaudeCredentialTests(unittest.TestCase):
         self.assertFalse(has_claude_credentials({"ANTHROPIC_API_KEY": " ", "ANTHROPIC_AUTH_TOKEN": ""}))
 
     def test_a_given_env_never_reads_the_disk(self):
-        with mock.patch("watchtower.core.llm_config.claude_signed_in", return_value=True) as signed_in:
+        with mock.patch("vanguard.core.llm_config.claude_signed_in", return_value=True) as signed_in:
             self.assertFalse(has_claude_credentials({}))
         signed_in.assert_not_called()
 
     def test_ant_auth_login_counts_as_a_provider(self):
         with mock.patch.dict(os.environ, _clean_env(), clear=True), \
-                mock.patch("watchtower.core.llm_config.claude_signed_in", return_value=True):
+                mock.patch("vanguard.core.llm_config.claude_signed_in", return_value=True):
             self.assertTrue(has_provider())
 
     def test_signed_in_follows_the_sdk(self):
@@ -68,13 +68,13 @@ class ClaudeCredentialTests(unittest.TestCase):
 @unittest.skipUnless(_HAS_LANGCHAIN, "langchain-anthropic is not installed in this environment")
 class ClaudeGetLlmTests(unittest.TestCase):
     def _llm(self, signed_in=False, **env):
-        from watchtower.agents import planner
+        from vanguard.agents import planner
 
         with mock.patch.dict(os.environ, _clean_env(**env), clear=True), \
-                mock.patch("watchtower.core.llm_config.claude_signed_in", return_value=signed_in):
+                mock.patch("vanguard.core.llm_config.claude_signed_in", return_value=signed_in):
             llm = planner.get_llm()
             # Build the SDK client inside the patched environment, as a run would.
-            client = llm._client if llm.__class__.__name__ == "WatchtowerChatAnthropic" else None
+            client = llm._client if llm.__class__.__name__ == "VanguardChatAnthropic" else None
         return llm, client
 
     def test_api_key_is_used(self):
@@ -96,14 +96,14 @@ class ClaudeGetLlmTests(unittest.TestCase):
         fake = mock.Mock(provider=None, extra_headers={}, base_url=None)
         with mock.patch("anthropic.lib.credentials.default_credentials", return_value=fake):
             llm, client = self._llm(signed_in=True)
-        self.assertEqual(llm.__class__.__name__, "WatchtowerChatAnthropic")
+        self.assertEqual(llm.__class__.__name__, "VanguardChatAnthropic")
         self.assertIsNone(llm._client_params["api_key"])
         self.assertIsNone(llm._client_params["base_url"])
 
     def test_model_name_and_flagship(self):
         llm, _ = self._llm(ANTHROPIC_API_KEY="k", ANTHROPIC_MODEL_NAME="claude-haiku-5-5")
         self.assertEqual(llm.model, "claude-haiku-5-5")
-        llm, _ = self._llm(ANTHROPIC_API_KEY="k", WATCHTOWER_FLAGSHIP="1")
+        llm, _ = self._llm(ANTHROPIC_API_KEY="k", VANGUARD_FLAGSHIP="1")
         self.assertEqual(llm.model, FLAGSHIP_MODELS["anthropic"])
         self.assertEqual(llm.reasoning_effort, "high")
 
@@ -118,14 +118,14 @@ class ClaudeGetLlmTests(unittest.TestCase):
     def test_provider_flag_without_model_uses_the_claude_default(self):
         for name in ("anthropic", "claude"):
             with self.subTest(provider=name):
-                llm, client = self._llm(WATCHTOWER_PROVIDER=name, ANTHROPIC_AUTH_TOKEN="t")
+                llm, client = self._llm(VANGUARD_PROVIDER=name, ANTHROPIC_AUTH_TOKEN="t")
                 self.assertEqual(llm.model, CLAUDE_DEFAULT_MODEL)
                 self.assertEqual(client.auth_token, "t")
 
     def test_provider_flag_with_named_key(self):
         llm, client = self._llm(
-            WATCHTOWER_PROVIDER="anthropic", WATCHTOWER_MODEL="claude-opus-5-5",
-            WATCHTOWER_APIKEY_NAME="MY_CLAUDE_KEY", MY_CLAUDE_KEY="sk-ant-mine",
+            VANGUARD_PROVIDER="anthropic", VANGUARD_MODEL="claude-opus-5-5",
+            VANGUARD_APIKEY_NAME="MY_CLAUDE_KEY", MY_CLAUDE_KEY="sk-ant-mine",
         )
         self.assertEqual(llm.model, "claude-opus-5-5")
         self.assertEqual(client.api_key, "sk-ant-mine")

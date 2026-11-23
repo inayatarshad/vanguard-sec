@@ -44,9 +44,9 @@ jobs:
         with:
           context: .
           load: true
-          tags: watchtower:ci
+          tags: vanguard:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Verify image
-        run: bash scripts/verify_image.sh watchtower:ci
+        run: bash scripts/verify_image.sh vanguard:ci

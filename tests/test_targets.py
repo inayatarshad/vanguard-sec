@@ -1,6 +1,6 @@
 import unittest
 
-from watchtower.core.targets import extract_hostname, normalize_url
+from vanguard.core.targets import extract_hostname, normalize_url
 
 
 class ExtractHostnameTests(unittest.TestCase):

@@ -3,7 +3,7 @@ import re
 import unittest
 from pathlib import Path
 
-from watchtower.tools import ALL_TOOLS
+from vanguard.tools import ALL_TOOLS
 
 INSTALLER = Path(__file__).resolve().parent.parent / "install_tools.sh"
 
@@ -15,7 +15,7 @@ class ToolCatalogTests(unittest.TestCase):
     def test_every_tool_has_a_wrapper(self):
         for name in ALL_TOOLS:
             with self.subTest(tool=name):
-                module = importlib.import_module(f"watchtower.tools.{name}")
+                module = importlib.import_module(f"vanguard.tools.{name}")
                 self.assertTrue(callable(getattr(module, "run", None)))
 
     def test_installer_installs_every_tool(self):

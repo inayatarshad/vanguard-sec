@@ -199,7 +199,7 @@ pip3 install wafw00f --break-system-packages 2>/dev/null || pip3 install wafw00f
 # 4b. httpx (ProjectDiscovery HTTP prober)
 # ════════════════════════════════════════════════════════════
 # Also exposed as pd-httpx: Python's httpx package (installed later with
-# Watchtower's requirements) ships its own `httpx` command that can replace
+# Vanguard's requirements) ships its own `httpx` command that can replace
 # /usr/local/bin/httpx, while pd-httpx stays pointed at the scanner.
 go_install httpx github.com/projectdiscovery/httpx/cmd/httpx@latest
 [[ -f "$HOME/go/bin/httpx" ]] && ln -sf "$HOME/go/bin/httpx" /usr/local/bin/pd-httpx || true

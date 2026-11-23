@@ -52,7 +52,7 @@ jobs:
 
       - name: Tag matches the package version
         run: |
-          version="$(python3 -c 'import re; print(re.search(r"__version__ = \"(.+?)\"", open("watchtower/__init__.py").read()).group(1))')"
+          version="$(python3 -c 'import re; print(re.search(r"__version__ = \"(.+?)\"", open("vanguard/__init__.py").read()).group(1))')"
           if [ "$version" != "$GITHUB_REF_NAME" ]; then
             echo "Tag $GITHUB_REF_NAME does not match __version__ $version" >&2
             exit 1

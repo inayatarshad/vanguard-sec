@@ -32,7 +32,7 @@ IDOR_REPLY = json.dumps({
 @unittest.skipUnless(_HAS_LANGCHAIN, "langchain is not installed in this environment")
 class LogicAnalysisTests(unittest.TestCase):
     def test_returns_only_the_new_finding(self):
-        from watchtower.agents import logic_analysis
+        from vanguard.agents import logic_analysis
 
         existing = [{"title": "Earlier finding", "severity": "Low"}]
         httpx_obs = {"target": "http://t", "tool": "httpx", "output": "200 OK /api/orders/1"}
@@ -47,7 +47,7 @@ class LogicAnalysisTests(unittest.TestCase):
         self.assertEqual(result["findings"][0]["title"], "IDOR Logic Analysis Plan")
 
     def test_runs_when_trigger_is_not_the_last_tool(self):
-        from watchtower.agents import logic_analysis
+        from vanguard.agents import logic_analysis
 
         step = [
             {"target": "http://t", "tool": "httpx", "output": "200 OK"},
@@ -62,7 +62,7 @@ class LogicAnalysisTests(unittest.TestCase):
         self.assertIn("findings", result)
 
     def test_skips_when_no_trigger_in_latest_step(self):
-        from watchtower.agents import logic_analysis
+        from vanguard.agents import logic_analysis
 
         step = [{"target": "http://t", "tool": "wafw00f", "output": "No WAF detected"}]
         with mock.patch.object(logic_analysis, "get_llm") as get_llm:
@@ -76,7 +76,7 @@ class LogicAnalysisTests(unittest.TestCase):
 @unittest.skipUnless(_HAS_LANGCHAIN, "langchain is not installed in this environment")
 class AnalystTests(unittest.TestCase):
     def test_reviews_every_tool_in_the_step(self):
-        from watchtower.agents import analyst
+        from vanguard.agents import analyst
 
         step = [
             {"target": "http://t", "tool": "wafw00f", "output": "WAFW00F-OUTPUT"},
@@ -93,7 +93,7 @@ class AnalystTests(unittest.TestCase):
             self.assertIn(text, prompt)
 
     def test_falls_back_to_last_observation(self):
-        from watchtower.agents import analyst
+        from vanguard.agents import analyst
 
         obs = [{"target": "http://t", "tool": "nmap", "output": "NMAP-OUTPUT"}]
         captured = []
@@ -107,7 +107,7 @@ class PlannerTests(unittest.TestCase):
     PLAN = json.dumps({"current_plan": "recon", "next_step": "finish", "is_finished": True})
 
     def test_prompt_includes_target_and_type(self):
-        from watchtower.agents import planner
+        from vanguard.agents import planner
 
         captured = []
         with mock.patch.object(planner, "get_llm", return_value=_fake_llm(self.PLAN, captured)):
@@ -117,7 +117,7 @@ class PlannerTests(unittest.TestCase):
         self.assertIn("127.0.0.1 (IP address)", prompt)
 
     def test_hostname_target_type(self):
-        from watchtower.agents import planner
+        from vanguard.agents import planner
 
         captured = []
         with mock.patch.object(planner, "get_llm", return_value=_fake_llm(self.PLAN, captured)):
@@ -125,7 +125,7 @@ class PlannerTests(unittest.TestCase):
         self.assertIn("example.com (hostname)", captured[0])
 
     def test_llm_setup_error_ends_plan_cleanly(self):
-        from watchtower.agents import planner
+        from vanguard.agents import planner
 
         with mock.patch.object(planner, "get_llm", side_effect=ValueError("bad provider config")):
             result = planner.planner_node({"scope_targets": ["http://t"], "available_tools": []})

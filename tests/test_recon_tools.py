@@ -3,13 +3,13 @@ import sys
 import unittest
 from unittest import mock
 
-from watchtower.core.targets import is_ip_address, looks_like_git_repo
-from watchtower.tools import runner
+from vanguard.core.targets import is_ip_address, looks_like_git_repo
+from vanguard.tools import runner
 
 
 def run_tool(name, target):
     """Run a wrapper with run_cli_tool replaced, returning (output, calls)."""
-    module = importlib.import_module(f"watchtower.tools.{name}")
+    module = importlib.import_module(f"vanguard.tools.{name}")
     calls = []
 
     def fake(command, **kwargs):

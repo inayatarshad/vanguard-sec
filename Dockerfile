@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY install_tools.sh /tmp/install_tools.sh
 RUN bash /tmp/install_tools.sh && rm -f /tmp/install_tools.sh
 
-# Python dependencies for Watchtower itself, cached until requirements change.
+# Python dependencies for Vanguard itself, cached until requirements change.
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -33,4 +33,4 @@ COPY . .
 # Ensure the SQLite DB is writable.
 RUN touch pentest_memory.db && chmod 666 pentest_memory.db
 
-CMD ["python", "-m", "watchtower.main"]
+CMD ["python", "-m", "vanguard.main"]

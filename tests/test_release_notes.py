@@ -40,13 +40,13 @@ class ReleaseNotesTests(unittest.TestCase):
             release_notes.extract_section("## 1x2y0\n\nstuff\n", "1.2.0")
 
     def test_notes_include_compare_link(self):
-        notes = release_notes.build_notes(SAMPLE, "1.2.0", "1.1.0", "fzn0x/watchtower")
+        notes = release_notes.build_notes(SAMPLE, "1.2.0", "1.1.0", "inayatarshad/vanguard-sec")
         self.assertTrue(notes.startswith("## What's Changed"))
-        self.assertIn("https://github.com/fzn0x/watchtower/compare/1.1.0...1.2.0", notes)
+        self.assertIn("https://github.com/inayatarshad/vanguard-sec/compare/1.1.0...1.2.0", notes)
 
     def test_real_changelog_has_current_version(self):
         # The release workflow refuses to publish without notes for the tag.
-        from watchtower import __version__
+        from vanguard import __version__
         text = release_notes.CHANGELOG.read_text(encoding="utf-8")
         self.assertTrue(release_notes.extract_section(text, __version__))
 

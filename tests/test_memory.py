@@ -3,7 +3,7 @@ import sqlite3
 import tempfile
 import unittest
 
-from watchtower.core.memory import MemoryStore, new_run_id
+from vanguard.core.memory import MemoryStore, new_run_id
 
 try:
     import langchain_core  # noqa: F401
@@ -75,7 +75,7 @@ class RunScopingTests(unittest.TestCase):
 class AnalystImportTests(unittest.TestCase):
     @unittest.skipUnless(_HAS_LANGCHAIN, "langchain is not installed in this environment")
     def test_analyst_module_has_logging(self):
-        import watchtower.agents.analyst as analyst
+        import vanguard.agents.analyst as analyst
         self.assertTrue(hasattr(analyst, "logging"))
 
 

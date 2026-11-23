@@ -9,11 +9,11 @@ from unittest import mock
 try:
     import langchain_core  # noqa: F401
 except Exception:
-    _stub = types.ModuleType("watchtower.core.state")
+    _stub = types.ModuleType("vanguard.core.state")
     _stub.AgentState = dict
-    sys.modules.setdefault("watchtower.core.state", _stub)
+    sys.modules.setdefault("vanguard.core.state", _stub)
 
-from watchtower.agents import worker
+from vanguard.agents import worker
 
 
 def _fake_module(name, run_fn):
@@ -36,7 +36,7 @@ class WorkerTests(unittest.TestCase):
         def fake_import(path):
             return _fake_module(path, run_fn)
 
-        with mock.patch("watchtower.agents.worker.importlib.import_module", side_effect=fake_import):
+        with mock.patch("vanguard.agents.worker.importlib.import_module", side_effect=fake_import):
             result = worker.worker_node({
                 "next_step": tools,
                 "available_tools": tools,
@@ -54,7 +54,7 @@ class WorkerTests(unittest.TestCase):
         def fake_import(path):
             return _fake_module(path, lambda target, auth_metadata=None: "ran")
 
-        with mock.patch("watchtower.agents.worker.importlib.import_module", side_effect=fake_import):
+        with mock.patch("vanguard.agents.worker.importlib.import_module", side_effect=fake_import):
             result = worker.worker_node({
                 "next_step": ["nmap", "notallowed"],
                 "available_tools": ["nmap"],
@@ -68,7 +68,7 @@ class WorkerTests(unittest.TestCase):
         def boom(target, auth_metadata=None):
             raise RuntimeError("kaboom")
 
-        with mock.patch("watchtower.agents.worker.importlib.import_module",
+        with mock.patch("vanguard.agents.worker.importlib.import_module",
                         side_effect=lambda path: _fake_module(path, boom)):
             result = worker.worker_node({
                 "next_step": "nmap",

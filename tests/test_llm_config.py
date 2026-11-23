@@ -1,6 +1,6 @@
 import unittest
 
-from watchtower.core.llm_config import (
+from vanguard.core.llm_config import (
     DEFAULT_REASONING_MAX_TOKENS,
     FLAGSHIP_MODELS,
     build_chat_kwargs,
@@ -20,26 +20,26 @@ class ReadRuntimeTests(unittest.TestCase):
 
     def test_parses_values(self):
         rt = read_llm_runtime({
-            "WATCHTOWER_FLAGSHIP": "1",
-            "WATCHTOWER_EFFORT": "high",
-            "WATCHTOWER_MAX_TOKENS": "8000",
+            "VANGUARD_FLAGSHIP": "1",
+            "VANGUARD_EFFORT": "high",
+            "VANGUARD_MAX_TOKENS": "8000",
         })
         self.assertEqual(rt, {"flagship": True, "effort": "high", "max_tokens": 8000})
 
     def test_flagship_truthy_variants(self):
         for val in ("1", "true", "YES", "on"):
-            self.assertTrue(read_llm_runtime({"WATCHTOWER_FLAGSHIP": val})["flagship"])
+            self.assertTrue(read_llm_runtime({"VANGUARD_FLAGSHIP": val})["flagship"])
         for val in ("0", "false", "", "no"):
-            self.assertFalse(read_llm_runtime({"WATCHTOWER_FLAGSHIP": val})["flagship"])
+            self.assertFalse(read_llm_runtime({"VANGUARD_FLAGSHIP": val})["flagship"])
 
     def test_bad_max_tokens_is_none(self):
-        self.assertIsNone(read_llm_runtime({"WATCHTOWER_MAX_TOKENS": "lots"})["max_tokens"])
+        self.assertIsNone(read_llm_runtime({"VANGUARD_MAX_TOKENS": "lots"})["max_tokens"])
 
     def test_effort_is_normalized(self):
-        self.assertEqual(read_llm_runtime({"WATCHTOWER_EFFORT": " HIGH "})["effort"], "high")
+        self.assertEqual(read_llm_runtime({"VANGUARD_EFFORT": " HIGH "})["effort"], "high")
 
     def test_unknown_effort_is_ignored(self):
-        self.assertIsNone(read_llm_runtime({"WATCHTOWER_EFFORT": "turbo"})["effort"])
+        self.assertIsNone(read_llm_runtime({"VANGUARD_EFFORT": "turbo"})["effort"])
 
 
 class ResolveEffortTests(unittest.TestCase):

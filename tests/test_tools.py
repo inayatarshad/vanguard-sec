@@ -3,32 +3,32 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from watchtower.core.wordlists import default_wordlist
-from watchtower.tools.gitleaks import _looks_like_git_repo
+from vanguard.core.wordlists import default_wordlist
+from vanguard.tools.gitleaks import _looks_like_git_repo
 
 
 class DefaultWordlistTests(unittest.TestCase):
     def setUp(self):
-        self._saved = os.environ.pop("WATCHTOWER_WORDLIST", None)
+        self._saved = os.environ.pop("VANGUARD_WORDLIST", None)
 
     def tearDown(self):
         if self._saved is not None:
-            os.environ["WATCHTOWER_WORDLIST"] = self._saved
+            os.environ["VANGUARD_WORDLIST"] = self._saved
         else:
-            os.environ.pop("WATCHTOWER_WORDLIST", None)
+            os.environ.pop("VANGUARD_WORDLIST", None)
 
     def test_env_override_wins_when_file_exists(self):
         with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as fh:
             fh.write("admin\nlogin\n")
             path = fh.name
         try:
-            os.environ["WATCHTOWER_WORDLIST"] = path
+            os.environ["VANGUARD_WORDLIST"] = path
             self.assertEqual(default_wordlist(), path)
         finally:
             os.unlink(path)
 
     def test_env_override_ignored_when_missing(self):
-        os.environ["WATCHTOWER_WORDLIST"] = "/no/such/wordlist-xyz.txt"
+        os.environ["VANGUARD_WORDLIST"] = "/no/such/wordlist-xyz.txt"
         self.assertNotEqual(default_wordlist(), "/no/such/wordlist-xyz.txt")
 
     def test_fallback_path_is_a_real_file(self):
