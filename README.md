@@ -491,6 +491,6 @@ By using Vanguard, you agree to use it only on systems you own or are explicitly
 
 ## Acknowledgements
 
-Maintained by **[inayatarshad](https://github.com/inayatarshad)**. Vanguard is built on Watchtower, originally created by **[fzn0x](https://github.com/fzn0x)** and released under the MIT License.
+Maintained by **[inayatarshad](https://github.com/inayatarshad)**.
 
-A deep and sincere thank you to the open-source security community. Vanguard stands on the shoulders of giants. This framework would not exist without the developers who built and maintain the underlying penetration testing and reconnaissance tools that power its worker engine. Thank you for making security accessible.
+
